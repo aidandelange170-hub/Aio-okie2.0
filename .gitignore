@@ -1,32 +1,67 @@
 ```
+# Compiled and build artifacts
+*.pyc
+__pycache__/
+*.o
+*.obj
+*.so
+*.dll
+*.exe
+*.out
+
 # Dependencies
-web/venv/
-web/.venv/
-web/__pycache__/
-web/node_modules/
+venv/
+.venv/
+.env
+.env.local
+.env.*
 
 # Logs and temp files
-web/*.log
-web/*.tmp
 *.log
-
-# Environment
-web/.env
-web/.env.local
-*.env.*
+*.tmp
+*.swp
 
 # Editors
-web/.vscode/
-web/.idea/
+.vscode/
+.idea/
 
-# Python specific
-web/*.pyc
-web/__pycache__/
-web/*.pyo
-web/*.pyd
+# Coverage reports
+coverage/
+htmlcov/
+.coverage
 
-# Build artifacts
-web/dist/
-web/build/
-web/*.egg-info/
+# Distribution / packaging
+dist/
+build/
+*.egg
+*.egg-info/
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Pytest cache
+.pytest_cache/
+
+# MyPy cache
+.mypy_cache/
+
+# Compressed files
+*.zip
+*.tar.gz
+*.gz
+*.tar
+*.tgz
+*.bz2
+*.xz
+*.7z
+*.rar
+*.zst
+*.lz4
+*.lzh
+*.cab
+*.arj
+*.rpm
+*.deb
+*.Z
+*.lz
+*.lzo
 ```
