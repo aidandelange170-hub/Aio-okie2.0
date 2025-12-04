@@ -1,0 +1,4 @@
+#!/bin/bash
+echo "Starting Complex Multi-Language IDE..."
+cd /workspace
+./ide_app
