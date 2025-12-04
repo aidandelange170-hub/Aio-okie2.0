@@ -1,70 +1,18 @@
 {
-  "appName": "Complex Multi-Language IDE",
-  "version": "1.0.0",
-  "supportedLanguages": [
-    {
-      "name": "C++",
-      "extension": ".cpp",
-      "color": "#005977",
-      "keywords": ["#include", "int", "char", "float", "double", "bool", "true", "false", "if", "else", "for", "while", "do", "switch", "case", "break", "continue", "return", "void", "class", "struct", "public", "private", "protected", "static", "const", "virtual", "new", "delete", "try", "catch", "throw", "namespace", "using", "template", "typename"]
-    },
-    {
-      "name": "Python",
-      "extension": ".py",
-      "color": "#306998",
-      "keywords": ["def", "class", "if", "elif", "else", "for", "while", "break", "continue", "return", "import", "from", "as", "try", "except", "finally", "with", "lambda", "and", "or", "not", "is", "in", "True", "False", "None", "global", "nonlocal", "del", "pass", "yield", "assert", "raise"]
-    },
-    {
-      "name": "JavaScript",
-      "extension": ".js",
-      "color": "#F0DB4F",
-      "keywords": ["var", "let", "const", "function", "if", "else", "for", "while", "do", "switch", "case", "break", "continue", "return", "try", "catch", "finally", "throw", "new", "this", "typeof", "instanceof", "in", "of", "class", "extends", "super", "import", "export", "default", "async", "await", "true", "false", "null", "undefined"]
-    },
-    {
-      "name": "Java",
-      "extension": ".java",
-      "color": "#ED8B00",
-      "keywords": ["abstract", "assert", "boolean", "break", "byte", "case", "catch", "char", "class", "const", "continue", "default", "do", "double", "else", "enum", "extends", "final", "finally", "float", "for", "goto", "if", "implements", "import", "instanceof", "int", "interface", "long", "native", "new", "package", "private", "protected", "public", "return", "short", "static", "strictfp", "super", "switch", "synchronized", "this", "throw", "throws", "transient", "try", "void", "volatile", "while", "true", "false", "null"]
-    },
-    {
-      "name": "C#",
-      "extension": ".cs",
-      "color": "#239120",
-      "keywords": ["abstract", "as", "base", "bool", "break", "byte", "case", "catch", "char", "checked", "class", "const", "continue", "decimal", "default", "delegate", "do", "double", "else", "enum", "event", "explicit", "extern", "false", "finally", "fixed", "float", "for", "foreach", "goto", "if", "implicit", "in", "int", "interface", "internal", "is", "lock", "long", "namespace", "new", "null", "object", "operator", "out", "override", "params", "private", "protected", "public", "readonly", "ref", "return", "sbyte", "sealed", "short", "sizeof", "stackalloc", "static", "string", "struct", "switch", "this", "throw", "true", "try", "typeof", "uint", "ulong", "unchecked", "unsafe", "ushort", "using", "virtual", "void", "volatile", "while"]
-    },
-    {
-      "name": "Ruby",
-      "extension": ".rb",
-      "color": "#CC342D",
-      "keywords": ["BEGIN", "END", "__ENCODING__", "__FILE__", "__LINE__", "alias", "and", "begin", "break", "case", "class", "def", "defined?", "do", "else", "elsif", "end", "ensure", "false", "for", "if", "in", "module", "next", "nil", "not", "or", "redo", "rescue", "retry", "return", "self", "super", "then", "true", "undef", "unless", "until", "when", "while", "yield"]
-    },
-    {
-      "name": "PHP",
-      "extension": ".php",
-      "color": "#777BB4",
-      "keywords": ["abstract", "and", "array", "as", "break", "callable", "case", "catch", "class", "clone", "const", "continue", "declare", "default", "die", "do", "echo", "else", "elseif", "empty", "enddeclare", "endfor", "endforeach", "endif", "endswitch", "endwhile", "eval", "exit", "extends", "final", "finally", "for", "foreach", "function", "global", "goto", "if", "implements", "include", "include_once", "instanceof", "insteadof", "interface", "isset", "list", "namespace", "new", "or", "print", "private", "protected", "public", "require", "require_once", "return", "static", "switch", "throw", "trait", "try", "unset", "use", "var", "while", "xor", "yield"]
-    },
-    {
-      "name": "Go",
-      "extension": ".go",
-      "color": "#00ADD8",
-      "keywords": ["break", "case", "chan", "const", "continue", "default", "defer", "else", "fallthrough", "for", "func", "go", "goto", "if", "import", "interface", "map", "package", "range", "return", "select", "struct", "switch", "type", "var", "true", "false", "iota", "nil"]
-    }
-  ],
-  "uiSettings": {
-    "theme": "dark",
-    "fontSize": 14,
-    "fontFamily": "Consolas, 'Courier New', monospace",
-    "sidebarWidth": 250,
-    "showLineNumbers": true,
-    "autoIndent": true,
-    "wordWrap": true
-  },
-  "editorSettings": {
-    "tabSize": 4,
-    "insertSpaces": true,
-    "autoComplete": true,
-    "syntaxHighlighting": true,
-    "bracketMatching": true
-  }
+    "app_name": "Complex Multi-Language Web IDE",
+    "version": "1.0.0",
+    "supported_languages": [
+        "python",
+        "javascript", 
+        "cpp",
+        "java",
+        "csharp",
+        "ruby",
+        "php",
+        "go"
+    ],
+    "default_language": "python",
+    "port": 5000,
+    "host": "0.0.0.0",
+    "debug": true
 }
