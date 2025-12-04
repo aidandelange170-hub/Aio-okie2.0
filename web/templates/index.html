@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complex Multi-Language Web IDE</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/ace.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #1e1e1e;
+            color: #d4d4d4;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        /* Menu Bar */
+        .menu-bar {
+            background-color: #333333;
+            padding: 8px 16px;
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid #454545;
+        }
+
+        .menu-item {
+            margin-right: 20px;
+            position: relative;
+        }
+
+        .menu-item button {
+            background: none;
+            border: none;
+            color: #d4d4d4;
+            cursor: pointer;
+            font-size: 14px;
+            padding: 4px 8px;
+        }
+
+        .menu-item button:hover {
+            background-color: #454545;
+            border-radius: 3px;
+        }
+
+        /* Toolbar */
+        .toolbar {
+            background-color: #3c3c3c;
+            padding: 8px 16px;
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid #454545;
+        }
+
+        .toolbar button {
+            background-color: #007acc;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            margin-right: 8px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .toolbar button:hover {
+            background-color: #005a9e;
+        }
+
+        .toolbar select {
+            padding: 6px;
+            margin-right: 8px;
+            background-color: #3c3c3c;
+            color: #d4d4d4;
+            border: 1px solid #454545;
+            border-radius: 3px;
+        }
+
+        /* Main Content */
+        .main-content {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 250px;
+            background-color: #252526;
+            border-right: 1px solid #454545;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar-header {
+            padding: 10px;
+            font-weight: bold;
+            border-bottom: 1px solid #454545;
+        }
+
+        .file-explorer {
+            flex: 1;
+            overflow-y: auto;
+            padding: 10px;
+        }
+
+        .file-item {
+            padding: 5px;
+            cursor: pointer;
+            border-radius: 3px;
+        }
+
+        .file-item:hover {
+            background-color: #2a2d2e;
+        }
+
+        .file-item.active {
+            background-color: #094771;
+        }
+
+        /* Editor Area */
+        .editor-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        #editor {
+            flex: 1;
+            min-height: 0;
+        }
+
+        /* Output Panel */
+        .output-panel {
+            height: 200px;
+            border-top: 1px solid #454545;
+            background-color: #1e1e1e;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .output-header {
+            padding: 8px 12px;
+            background-color: #252526;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #454545;
+        }
+
+        .output-content {
+            flex: 1;
+            padding: 10px;
+            overflow-y: auto;
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 14px;
+            white-space: pre-wrap;
+            background-color: #1e1e1e;
+        }
+
+        .output-error {
+            color: #f48771;
+        }
+
+        /* Status Bar */
+        .status-bar {
+            background-color: #007acc;
+            color: white;
+            padding: 4px 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+        }
+
+        .status-item {
+            margin-right: 15px;
+        }
+
+        /* File Explorer Icons */
+        .file-icon {
+            margin-right: 5px;
+            color: #9cdcfe;
+        }
+
+        .folder-icon {
+            margin-right: 5px;
+            color: #bb88ff;
+        }
+
+        /* Ace Editor Theme */
+        .ace_editor {
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Menu Bar -->
+        <div class="menu-bar">
+            <div class="menu-item">
+                <button id="file-menu">File</button>
+            </div>
+            <div class="menu-item">
+                <button id="edit-menu">Edit</button>
+            </div>
+            <div class="menu-item">
+                <button id="view-menu">View</button>
+            </div>
+            <div class="menu-item">
+                <button id="run-menu">Run</button>
+            </div>
+        </div>
+
+        <!-- Toolbar -->
+        <div class="toolbar">
+            <button id="run-btn"><i class="fas fa-play"></i> Run</button>
+            <button id="save-btn"><i class="fas fa-save"></i> Save</button>
+            <button id="load-btn"><i class="fas fa-folder-open"></i> Load</button>
+            <select id="language-select">
+                <option value="python">Python</option>
+                <option value="javascript">JavaScript</option>
+                <option value="cpp">C++</option>
+                <option value="java">Java</option>
+                <option value="csharp">C#</option>
+                <option value="ruby">Ruby</option>
+                <option value="php">PHP</option>
+                <option value="go">Go</option>
+            </select>
+            <input type="text" id="filename-input" placeholder="Filename" style="padding: 6px; margin-right: 8px; background-color: #3c3c3c; color: #d4d4d4; border: 1px solid #454545; border-radius: 3px;">
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Sidebar -->
+            <div class="sidebar">
+                <div class="sidebar-header">
+                    <i class="fas fa-folder-open"></i> EXPLORER
+                </div>
+                <div class="file-explorer" id="file-explorer">
+                    <div class="file-item active" data-file="main.py">
+                        <i class="file-icon fas fa-file-code"></i> main.py
+                    </div>
+                    <div class="file-item" data-file="script.js">
+                        <i class="file-icon fas fa-file-code"></i> script.js
+                    </div>
+                    <div class="file-item" data-file="program.cpp">
+                        <i class="file-icon fas fa-file-code"></i> program.cpp
+                    </div>
+                </div>
+            </div>
+
+            <!-- Editor Container -->
+            <div class="editor-container">
+                <div id="editor">print("Hello, World!")</div>
+            </div>
+        </div>
+
+        <!-- Output Panel -->
+        <div class="output-panel">
+            <div class="output-header">
+                <span>OUTPUT</span>
+                <button id="clear-output"><i class="fas fa-times"></i> Clear</button>
+            </div>
+            <div class="output-content" id="output-content">
+                Welcome to the Complex Multi-Language Web IDE!
+                Click "Run" to execute your code.
+            </div>
+        </div>
+
+        <!-- Status Bar -->
+        <div class="status-bar">
+            <div>
+                <span class="status-item" id="status-lang">Python</span>
+                <span class="status-item" id="status-line">Line: 1, Column: 1</span>
+            </div>
+            <div>
+                <span class="status-item">UTF-8</span>
+                <span class="status-item">LF</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize Ace Editor
+        const editor = ace.edit("editor", {
+            maxLines: 30,
+            theme: "ace/theme/vs_dark"
+        });
+        
+        editor.setOptions({
+            fontSize: "14px",
+            showPrintMargin: false,
+            highlightActiveLine: true,
+            highlightGutterLine: true,
+            showLineNumbers: true,
+            tabSize: 4
+        });
+
+        // Set initial language
+        let currentLanguage = 'python';
+        updateEditorMode(currentLanguage);
+
+        // Language selection
+        document.getElementById('language-select').addEventListener('change', function() {
+            currentLanguage = this.value;
+            updateEditorMode(currentLanguage);
+            document.getElementById('status-lang').textContent = 
+                document.querySelector(`option[value="${currentLanguage}"]`).text;
+        });
+
+        // Update editor mode based on language
+        function updateEditorMode(lang) {
+            switch(lang) {
+                case 'python':
+                    editor.getSession().setMode("ace/mode/python");
+                    break;
+                case 'javascript':
+                    editor.getSession().setMode("ace/mode/javascript");
+                    break;
+                case 'cpp':
+                    editor.getSession().setMode("ace/mode/c_cpp");
+                    break;
+                case 'java':
+                    editor.getSession().setMode("ace/mode/java");
+                    break;
+                case 'csharp':
+                    editor.getSession().setMode("ace/mode/csharp");
+                    break;
+                case 'ruby':
+                    editor.getSession().setMode("ace/mode/ruby");
+                    break;
+                case 'php':
+                    editor.getSession().setMode("ace/mode/php");
+                    break;
+                case 'go':
+                    editor.getSession().setMode("ace/mode/golang");
+                    break;
+            }
+        }
+
+        // Update cursor position in status bar
+        editor.getSession().selection.on('changeCursor', function() {
+            const cursor = editor.getCursorPosition();
+            document.getElementById('status-line').textContent = 
+                `Line: ${cursor.row + 1}, Column: ${cursor.column + 1}`;
+        });
+
+        // Run button functionality
+        document.getElementById('run-btn').addEventListener('click', function() {
+            const code = editor.getValue();
+            const language = currentLanguage;
+            
+            fetch('/api/run', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    code: code,
+                    language: language
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                const outputContent = document.getElementById('output-content');
+                if (data.error) {
+                    outputContent.innerHTML = '<span class="output-error">' + data.error + '</span>';
+                } else {
+                    outputContent.textContent = data.output || 'Program executed successfully (no output)';
+                }
+            })
+            .catch(error => {
+                document.getElementById('output-content').textContent = 'Error: ' + error.message;
+            });
+        });
+
+        // Save button functionality
+        document.getElementById('save-btn').addEventListener('click', function() {
+            const code = editor.getValue();
+            const filename = document.getElementById('filename-input').value || 'untitled.txt';
+            
+            fetch('/api/save', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    code: code,
+                    filename: filename
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert(`File ${filename} saved successfully!`);
+                } else {
+                    alert('Error saving file: ' + data.error);
+                }
+            })
+            .catch(error => {
+                alert('Error saving file: ' + error.message);
+            });
+        });
+
+        // Load button functionality
+        document.getElementById('load-btn').addEventListener('click', function() {
+            const filename = document.getElementById('filename-input').value;
+            if (!filename) {
+                alert('Please enter a filename to load');
+                return;
+            }
+            
+            fetch('/api/load', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    filename: filename
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    editor.setValue(data.content);
+                    editor.gotoLine(1); // Go to first line
+                    alert(`File ${filename} loaded successfully!`);
+                } else {
+                    alert('Error loading file: ' + data.error);
+                }
+            })
+            .catch(error => {
+                alert('Error loading file: ' + error.message);
+            });
+        });
+
+        // Clear output button
+        document.getElementById('clear-output').addEventListener('click', function() {
+            document.getElementById('output-content').textContent = '';
+        });
+
+        // File explorer functionality
+        const fileItems = document.querySelectorAll('.file-item');
+        fileItems.forEach(item => {
+            item.addEventListener('click', function() {
+                // Remove active class from all items
+                fileItems.forEach(i => i.classList.remove('active'));
+                // Add active class to clicked item
+                this.classList.add('active');
+                
+                // In a real implementation, this would load the selected file
+                // For now, we'll just show a message
+                const filename = this.getAttribute('data-file');
+                document.getElementById('filename-input').value = filename;
+                
+                // Update language based on file extension
+                if (filename.endsWith('.py')) {
+                    document.getElementById('language-select').value = 'python';
+                    currentLanguage = 'python';
+                    updateEditorMode('python');
+                } else if (filename.endsWith('.js')) {
+                    document.getElementById('language-select').value = 'javascript';
+                    currentLanguage = 'javascript';
+                    updateEditorMode('javascript');
+                } else if (filename.endsWith('.cpp') || filename.endsWith('.c') || filename.endsWith('.h')) {
+                    document.getElementById('language-select').value = 'cpp';
+                    currentLanguage = 'cpp';
+                    updateEditorMode('cpp');
+                } else if (filename.endsWith('.java')) {
+                    document.getElementById('language-select').value = 'java';
+                    currentLanguage = 'java';
+                    updateEditorMode('java');
+                } else if (filename.endsWith('.cs')) {
+                    document.getElementById('language-select').value = 'csharp';
+                    currentLanguage = 'csharp';
+                    updateEditorMode('csharp');
+                } else if (filename.endsWith('.rb')) {
+                    document.getElementById('language-select').value = 'ruby';
+                    currentLanguage = 'ruby';
+                    updateEditorMode('ruby');
+                } else if (filename.endsWith('.php')) {
+                    document.getElementById('language-select').value = 'php';
+                    currentLanguage = 'php';
+                    updateEditorMode('php');
+                } else if (filename.endsWith('.go')) {
+                    document.getElementById('language-select').value = 'go';
+                    currentLanguage = 'go';
+                    updateEditorMode('go');
+                }
+                
+                document.getElementById('status-lang').textContent = 
+                    document.querySelector(`option[value="${currentLanguage}"]`).text;
+            });
+        });
+    </script>
+</body>
+</html>
